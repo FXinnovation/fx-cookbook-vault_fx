@@ -33,6 +33,8 @@ action :create do
     content(
       Unit: {
         Description: 'Vault systemd service unit',
+        Requires:    'network-online.target',
+        After:       'network-online.target',
       },
       Service: {
         ExecStart:    exec_start,
