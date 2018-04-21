@@ -1,0 +1,138 @@
+---
+driver:
+  name: gce
+  project: dazzlingwrench
+  region: us-east1
+  preemptible: true
+  metadata:
+    ssh-keys: <%= 'kitchenuser:' + IO.binread("/tmp/id_rsa.pub").rstrip! %>
+  tags:
+  - fxinnovation
+
+provisioner:
+  name: chef_zero
+
+verifier:
+  name: inspec
+  sudo: true
+  format: junit
+  output: "%{platform}_%{suite}_inspec.xml"
+
+transport:
+  username: kitchenuser
+  ssh_key: /tmp/id_rsa
+
+platforms:
+  - name: centos6
+    driver:
+      image_project: centos-cloud
+      image_family: centos-6
+  - name: centos7
+    driver:
+      image_project: centos-cloud
+      image_family: centos-7
+  - name: redhat6
+    driver:
+      image_project: rhel-cloud
+      image_family: rhel-6
+  - name: redhat7
+    driver:
+      image_project: rhel-cloud
+      image_family: rhel-7
+  - name: ubuntu1404
+    driver:
+      image_project: ubuntu-os-cloud
+      image_family: ubuntu-1404-lts
+  - name: ubuntu1604
+    driver:
+      image_project: ubuntu-os-cloud
+      image_family: ubuntu-1604-lts
+  - name: debian8
+    driver:
+      image_project: debian-cloud
+      image_family: debian-8
+  - name: debian9
+    driver:
+      image_project: debian-cloud
+      image_family: debian-9
+  - name: windows2008
+    driver:
+      email: 954209166228-compute@developer.gserviceaccount.com
+      image_project: windows-cloud
+      image_family: windows-2008-r2
+      disk_size: 50
+      metadata:
+        windows-startup-script-ps1: |
+          [System.Net.Dns]::GetHostAddresses("activedirectory.c.dazzlingwrench.internal").IPAddressToString | select $_ -OutVar dnsaddress
+          $wmi = Get-WmiObject win32_networkadapterconfiguration -filter "ipenabled = 'true'"
+          $wmi.SetDNSServerSearchOrder($dnsaddress)
+          netsh firewall add portopening TCP 5985 "Port 5985"
+          winrm quickconfig -q
+          winrm s winrm/config/winrs '@{MaxMemoryPerShellMB="512"}'
+          winrm s winrm/config '@{MaxTimeoutms="1800000"}'
+          winrm s winrm/config/service '@{AllowUnencrypted="true"}'
+          winrm s winrm/config/service/auth '@{Basic="true"}'
+          winrm s winrm/config/listener?Address=*+Transport=HTTP '@{Port="5985"}'
+          get-service winrm
+  - name: windows2012
+    driver:
+      email: 954209166228-compute@developer.gserviceaccount.com
+      image_project: windows-cloud
+      image_family: windows-2012-r2
+      disk_size: 50
+      metadata:
+        windows-startup-script-ps1: |
+          netsh firewall add portopening TCP 5985 "Port 5985"
+          winrm quickconfig -q
+          winrm s winrm/config/winrs '@{MaxMemoryPerShellMB="512"}'
+          winrm s winrm/config '@{MaxTimeoutms="1800000"}'
+          winrm s winrm/config/service '@{AllowUnencrypted="true"}'
+          winrm s winrm/config/service/auth '@{Basic="true"}'
+          winrm s winrm/config/listener?Address=*+Transport=HTTP '@{Port="5985"}'
+          get-service winrm
+  - name: windows2016
+    transport:
+      connection_retry_sleep: 30
+    driver:
+      email: 954209166228-compute@developer.gserviceaccount.com
+      image_project: windows-cloud
+      image_family: windows-2016
+      machine_type: n1-standard-2
+      disk_size: 50
+      metadata:
+        windows-startup-script-ps1: |
+          netsh firewall add portopening TCP 5985 "Port 5985"
+          winrm quickconfig -q
+          winrm s winrm/config/winrs '@{MaxMemoryPerShellMB="512"}'
+          winrm s winrm/config '@{MaxTimeoutms="1800000"}'
+          winrm s winrm/config/service '@{AllowUnencrypted="true"}'
+          winrm s winrm/config/service/auth '@{Basic="true"}'
+          winrm s winrm/config/listener?Address=*+Transport=HTTP '@{Port="5985"}'
+          get-service winrm
+
+suites:
+#  - name: windows
+#    run_list:
+#      - recipe[consul_fx::kitchen]
+#    includes:
+#    - windows2016
+#    - windows2012
+#    - windows2008
+#    verifier:
+#      inspec_tests:
+#      - name: windows
+#        path: test/integration/windows
+  - name: linux
+    run_list:
+      - recipe[vault_fx::kitchen]
+    attributes:
+    includes:
+    - centos7
+    - redhat7
+    - debian8
+    - debian9
+    - ubuntu1604
+    verifier:
+      inspec_tests:
+      - name: linux
+        path: test/integration/linux
