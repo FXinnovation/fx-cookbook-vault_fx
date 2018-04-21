@@ -126,6 +126,18 @@ suites:
     run_list:
       - recipe[vault_fx::kitchen]
     attributes:
+      vault_fx:
+        vault:
+          version: 0.10.0
+          checksum: a6b4b6db132f3bbe6fbb77f76228ffa45bd55a5a1ab83ff043c2c665c3f5a744
+          configuration:
+            storage:
+                file:
+                  path: /opt/vault
+            listener:
+              tcp:
+                address: 127.0.0.1:8200
+                tls_disable: true
     includes:
     - centos7
     - redhat7
