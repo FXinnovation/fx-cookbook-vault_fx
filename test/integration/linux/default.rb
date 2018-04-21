@@ -33,7 +33,7 @@ control "vault_fx - #{os.name} #{os.release}" do
     it { should be_running }
   end
 
-  [8200, 8201].each do |vault_port|
+  [8200].each do |vault_port|
     describe port(vault_port) do
       it { should be_listening }
       its('processes') { should include 'vault' }
