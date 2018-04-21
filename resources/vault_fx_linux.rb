@@ -22,6 +22,7 @@ property :service_name,      String, default:  'vault'
 property :install_directory, String, default:  '/opt/vault'
 property :cache_dir,         String, default:  Chef::Config['file_cache_path']
 property :configuration,     Hash,   required: true
+property :log_level,         String
 
 # Default action
 default_action :install
@@ -115,6 +116,7 @@ action :install do
     install_dir new_resource.install_directory
     user        new_resource.user
     group       new_resource.group
+    log_level   new_resource.log_level unless new_resource.property_is_set?(:log_level)
     action      :create
   end
 end

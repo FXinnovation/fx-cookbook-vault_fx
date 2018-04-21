@@ -18,6 +18,7 @@ end
 property :install_dir, String, required: true
 property :user,        String, required: true
 property :group,       String, required: true
+property :log_level,   String, defualt:  'info'
 
 # Defining default action
 default_action :create
@@ -26,7 +27,7 @@ default_action :create
 action :create do
   # Consul systemd execStart command
   exec_start = "#{new_resource.install_dir}/bin/vault server "
-  exec_start << "-config #{new_resource.install_dir}/conf.d"
+  exec_start << "-config #{new_resource.install_dir}/conf.d -log-level=#{new_resource.log_level}"
 
   # systemd unit file for vault service
   systemd_unit "#{new_resource.name}.service" do
