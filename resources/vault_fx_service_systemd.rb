@@ -42,7 +42,7 @@ action :create do
         Restart:      'always',
         User:         new_resource.user,
         Group:        new_resource.group,
-        LimitMEMLOCK: infinity,
+        LimitMEMLOCK: 'infinity',
       },
       Install: {
         WantedBy: 'multi-user.target',
