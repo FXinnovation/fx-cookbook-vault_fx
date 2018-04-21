@@ -16,8 +16,8 @@ provides :vault_fx, os: 'linux'
 property :url,               String
 property :checksum,          String
 property :version,           String, default:  '0.10.0'
-property :user,              String, default:  'root'
-property :group,             String, default:  'root'
+property :user,              String, default:  'vault'
+property :group,             String, default:  'vault'
 property :service_name,      String, default:  'vault'
 property :install_directory, String, default:  '/opt/vault'
 property :cache_dir,         String, default:  Chef::Config['file_cache_path']

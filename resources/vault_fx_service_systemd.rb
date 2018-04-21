@@ -35,10 +35,11 @@ action :create do
         Description: 'Vault systemd service unit',
       },
       Service: {
-        ExecStart:  exec_start,
-        Restart:    'always',
-        User:       new_resource.user,
-        Group:      new_resource.group,
+        ExecStart:    exec_start,
+        Restart:      'always',
+        User:         new_resource.user,
+        Group:        new_resource.group,
+        LimitMEMLOCK: infinity
       },
       Install: {
         WantedBy: 'multi-user.target',
