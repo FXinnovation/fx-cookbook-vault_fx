@@ -13,8 +13,8 @@ control "vault_fx - #{os.name} #{os.release}" do
   %w(/opt/vault/bin/vault /opt/vault/conf.d/configuration.json).each do |configuration_file|
     describe file(configuration_file) do
       it           { should exist }
-      its('group') { should eq 'root' }
-      its('owner') { should eq 'root' }
+      its('group') { should eq 'vault' }
+      its('owner') { should eq 'vault' }
       its('type')  { should eq :file }
     end
   end
@@ -22,8 +22,8 @@ control "vault_fx - #{os.name} #{os.release}" do
   %w(/opt/vault /opt/vault/conf.d /opt/vault/bin).each do |vault_dir|
     describe directory(vault_dir) do
       it           { should exist }
-      its('group') { should eq 'root' }
-      its('owner') { should eq 'root' }
+      its('group') { should eq 'vault' }
+      its('owner') { should eq 'vault' }
     end
   end
 
