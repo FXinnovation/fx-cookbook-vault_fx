@@ -6,6 +6,18 @@
 #
 control "vault_fx - #{os.name} #{os.release}" do
   title 'Ensure vault is installed'
+
+  describe user('vault') do
+    it           { should exist }
+    its('uid')   { should < 1000 }
+    its('group') { should eq 'vault' }
+    its('home')  { should eq '/opt/vault' }
+  end
+
+  describe group('vault') do
+    it { should exist }
+  end
+
   describe command('/opt/vault/bin/vault --version') do
     its('exit_status') { should eq 0 }
   end

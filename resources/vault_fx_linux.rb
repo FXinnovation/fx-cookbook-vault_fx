@@ -50,7 +50,9 @@ action :install do
   # Declaring user
   declare_resource(:user, new_resource.user) do
     group   new_resource.group
-    shell   '/bin/bash'
+    shell   '/bin/nologin'
+    system  true
+    home    new_resource.install_directory
     comment 'User for vault agent'
     action  :create
   end
