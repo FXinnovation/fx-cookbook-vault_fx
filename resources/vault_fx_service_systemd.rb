@@ -18,7 +18,7 @@ end
 property :install_dir, String, required: true
 property :user,        String, required: true
 property :group,       String, required: true
-property :log_level,   String, defualt:  'info'
+property :log_level,   String, default:  'info'
 
 # Defining default action
 default_action :create
